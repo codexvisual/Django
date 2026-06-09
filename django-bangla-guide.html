@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Django সম্পূর্ণ গাইড | Basic to Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Hind+Siliguri:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2333;
+    --border: #30363d;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --accent4: #d2a8ff;
+    --accent5: #ffa657;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --text-dim: #6e7681;
+    --code-bg: #0d1117;
+    --tag-py: #1f3a5f;
+    --tag-py-text: #58a6ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Hind Siliguri', sans-serif;
+    line-height: 1.7;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d2137 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 64px 24px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .hero h1 .highlight { color: var(--accent); }
+  .hero h1 .highlight2 { color: var(--accent2); }
+  .hero p {
+    color: var(--text-muted);
+    font-size: 18px;
+    max-width: 600px;
+    margin: 0 auto 32px;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .stat-label { font-size: 13px; color: var(--text-muted); }
+
+  /* ── NAV ── */
+  .nav-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,17,23,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .nav-bar::-webkit-scrollbar { height: 3px; }
+  .nav-bar::-webkit-scrollbar-thumb { background: var(--border); }
+  .nav-inner {
+    display: inline-flex;
+    gap: 4px;
+    padding: 8px 0;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .nav-btn {
+    background: none; border: none;
+    color: var(--text-muted);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .nav-btn:hover { color: var(--text); background: var(--surface); }
+  .nav-btn.active { color: var(--accent); background: rgba(88,166,255,0.1); }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  /* ── SECTION ── */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-header {
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-eyebrow {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .section-header h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .section-header p { color: var(--text-muted); font-size: 15px; }
+
+  /* ── CARDS ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--accent); }
+  .card-icon {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+  .card h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .card p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+  /* ── CMD BLOCK ── */
+  .cmd-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .cmd-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .cmd-dots { display: flex; gap: 6px; }
+  .cmd-dots span {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .cmd-dots span:nth-child(1) { background: #ff5f56; }
+  .cmd-dots span:nth-child(2) { background: #ffbd2e; }
+  .cmd-dots span:nth-child(3) { background: #27c93f; }
+  .cmd-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .cmd-tag {
+    margin-left: auto;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .tag-bash { background: rgba(63,185,80,0.15); color: var(--accent2); }
+  .tag-py { background: var(--tag-py); color: var(--tag-py-text); }
+  .tag-info { background: rgba(210,168,255,0.15); color: var(--accent4); }
+
+  .cmd-body { padding: 16px; }
+
+  .cmd-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .cmd-item {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+  }
+  .cmd-item:last-child { border-bottom: none; }
+  .cmd-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent2);
+    background: rgba(63,185,80,0.06);
+    border: 1px solid rgba(63,185,80,0.15);
+    padding: 6px 12px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    display: block;
+    word-break: break-all;
+  }
+  .cmd-code.bash::before {
+    content: '$ ';
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .cmd-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    padding-left: 2px;
+  }
+  .cmd-desc .bn { color: var(--text); }
+  .cmd-desc .en { color: var(--text-muted); font-style: italic; }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+  .code-filename {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .code-filename .path { color: var(--text-dim); }
+  .code-filename .file { color: var(--accent5); }
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  pre::-webkit-scrollbar { height: 4px; }
+  pre::-webkit-scrollbar-thumb { background: var(--border); }
+  .kw { color: #ff7b72; }
+  .fn { color: #d2a8ff; }
+  .st { color: #a5d6ff; }
+  .cm { color: var(--text-dim); font-style: italic; }
+  .nb { color: #ffa657; }
+  .cl { color: #3fb950; }
+  .dc { color: #ff7b72; }
+
+  /* ── STEP LIST ── */
+  .steps { counter-reset: step; }
+  .step-item {
+    display: flex;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .step-item:last-child { border-bottom: none; }
+  .step-num {
+    flex-shrink: 0;
+    width: 36px; height: 36px;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--accent);
+    counter-increment: step;
+  }
+  .step-content h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .step-content p { font-size: 14px; color: var(--text-muted); }
+
+  /* ── TIPS ── */
+  .tip {
+    background: rgba(63,185,80,0.06);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+  .tip strong { color: var(--accent2); font-family: 'Space Grotesk', sans-serif; }
+
+  .warning {
+    background: rgba(255,166,87,0.06);
+    border: 1px solid rgba(255,166,87,0.2);
+    border-left: 3px solid var(--accent5);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+  .warning strong { color: var(--accent5); }
+
+  /* ── LEVEL BADGE ── */
+  .level-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    vertical-align: middle;
+  }
+  .level-basic { background: rgba(63,185,80,0.15); color: var(--accent2); }
+  .level-mid { background: rgba(255,166,87,0.15); color: var(--accent5); }
+  .level-adv { background: rgba(247,129,102,0.15); color: var(--accent3); }
+
+  /* ── TABLE ── */
+  .tbl-wrap { overflow-x: auto; margin-bottom: 24px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  th {
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+    vertical-align: top;
+  }
+  tr:hover td { background: rgba(88,166,255,0.03); }
+  td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent2);
+  }
+  td .bn { color: var(--text); display: block; }
+  td .en { color: var(--text-muted); font-size: 12px; font-style: italic; }
+
+  /* ── ROADMAP ── */
+  .roadmap { position: relative; padding-left: 32px; }
+  .roadmap::before {
+    content: '';
+    position: absolute;
+    left: 10px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent4), var(--accent2));
+    border-radius: 2px;
+  }
+  .rm-item {
+    position: relative;
+    padding: 0 0 32px 24px;
+  }
+  .rm-item::before {
+    content: '';
+    position: absolute;
+    left: -28px; top: 6px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    background: var(--bg);
+  }
+  .rm-item.done::before { background: var(--accent); }
+  .rm-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .rm-list {
+    list-style: none;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .rm-list li::before { content: '→ '; color: var(--accent); }
+  .rm-list li { padding: 2px 0; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 32px 24px;
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+
+  @media (max-width: 640px) {
+    .card-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Complete Learning Resource</div>
+  <h1>
+    <span class="highlight">Django</span> সম্পূর্ণ গাইড<br>
+    <span style="font-size:0.6em;color:var(--text-muted)">Basic থেকে <span class="highlight2">Pro Expert</span> পর্যন্ত</span>
+  </h1>
+  <p>বাংলায় সম্পূর্ণ ব্যাখ্যা সহ সব কমান্ড, কনসেপ্ট ও প্র্যাকটিক্যাল উদাহরণ</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">100+</div><div class="stat-label">Commands & Tips</div></div>
+    <div class="stat"><div class="stat-num">7</div><div class="stat-label">বিভাগ</div></div>
+    <div class="stat"><div class="stat-num">Basic→Pro</div><div class="stat-label">সম্পূর্ণ পথ</div></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-bar">
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="show('setup')">🛠 Setup</button>
+    <button class="nav-btn" onclick="show('core')">⚡ Core Commands</button>
+    <button class="nav-btn" onclick="show('models')">🗄 Models & DB</button>
+    <button class="nav-btn" onclick="show('views')">👁 Views & URLs</button>
+    <button class="nav-btn" onclick="show('api')">🔌 REST API</button>
+    <button class="nav-btn" onclick="show('auth')">🔒 Auth & Security</button>
+    <button class="nav-btn" onclick="show('deploy')">🚀 Deploy</button>
+    <button class="nav-btn" onclick="show('roadmap')">🗺 Roadmap</button>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════
+     SECTION 1: SETUP
+════════════════════════════════════════ -->
+<section id="setup" class="section active">
+  <div class="section-header">
+    <div class="section-eyebrow">প্রথম ধাপ</div>
+    <h2>🛠 Environment Setup</h2>
+    <p>Python ইনস্টল থেকে শুরু করে প্রথম Django প্রজেক্ট রান করা পর্যন্ত।</p>
+  </div>
+
+  <div class="tip"><strong>💡 টিপ:</strong> প্রতিটি প্রজেক্টের জন্য আলাদা Virtual Environment ব্যবহার করো। এতে প্যাকেজ কনফ্লিক্ট হবে না।</div>
+
+  <div class="cmd-block">
+    <div class="cmd-header">
+      <div class="cmd-dots"><span></span><span></span><span></span></div>
+      <span class="cmd-title">Virtual Environment তৈরি ও Activate</span>
+      <span class="cmd-tag tag-bash">BASH</span>
+    </div>
+    <div class="cmd-body">
+      <div class="cmd-item">
+        <span class="cmd-code bash">python -m venv venv</span>
+        <div class="cmd-desc">
+          <span class="bn">👉 <code>venv</code> নামে একটি Virtual Environment তৈরি করে। এটি তোমার প্রজেক্টের জন্য আলাদা Python জগৎ।</span>
+          <br><span class="en">Creates an isolated Python environment named "venv"</span>
+        </div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code bash">source venv/bin/activate</span>
+        <div class="cmd-desc">
+          <span class="bn">👉 Mac/Linux-এ venv চালু করো। Terminal-এ <code>(venv)</code> দেখা যাবে।</span>
+          <br><span class="en">Activates venv on Mac/Linux — you'll see (venv) in your prompt</span>
+        </div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code bash">venv\Scripts\activate</span>
+        <div class="cmd-desc">
+          <span class="bn">👉 Windows-এ venv চালু করার কমান্ড।</span>
+          <br><span class="en">Activates venv on Windows</span>
+        </div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code bash">deactivate</span>
+        <div class="cmd-desc">
+          <span class="bn">👉 venv বন্ধ করো। আবার global Python-এ ফিরে যাবে।</span>
+          <br><span class="en">Deactivates the virtual environment</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cmd-block">
+    <div class="cmd-header">
+      <div class="cmd-dots"><span></span><span></span><span></span></div>
+      <span class="cmd-title">Django ইনস্টল ও প্রজেক্ট শুরু</span>
+      <span class="cmd-tag tag-bash">BASH</span>
+    </div>
+    <div class="cmd-body">
+      <div class="cmd-item">
+        <span class="cmd-code bash">pip install django</span>
+        <div class="cmd-desc"><span class="bn">👉 সর্বশেষ Django ইনস্টল করো।</span> <span class="en">Install latest Django</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code bash">pip install django==4.2</span>
+        <div class="cmd-desc"><span class="bn">👉 নির্দিষ্ট ভার্সন ইনস্টল করো। LTS ভার্সন (4.2) প্রডাকশনে ভালো।</span> <span class="en">Install specific version — 4.2 is LTS</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code bash">django-admin startproject myproject .</span>
+        <div class="cmd-desc"><span class="bn">👉 নতুন Django প্রজেক্ট তৈরি করো। শেষে <code>.</code> দিলে current folder-এই তৈরি হবে।</span> <span class="en">Creates a new Django project in current directory</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code bash">python manage.py runserver</span>
+        <div class="cmd-desc"><span class="bn">👉 Development server চালু করো। Browser-এ <code>http://127.0.0.1:8000</code> খোলো।</span> <span class="en">Starts dev server at localhost:8000</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code bash">python manage.py runserver 0.0.0.0:8080</span>
+        <div class="cmd-desc"><span class="bn">👉 নির্দিষ্ট port-এ সার্ভার চালাও। Network-এর অন্য device থেকেও access করা যাবে।</span> <span class="en">Run on specific port, accessible on local network</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cmd-block">
+    <div class="cmd-header">
+      <div class="cmd-dots"><span></span><span></span><span></span></div>
+      <span class="cmd-title">App তৈরি ও Requirements</span>
+      <span class="cmd-tag tag-bash">BASH</span>
+    </div>
+    <div class="cmd-body">
+      <div class="cmd-item">
+        <span class="cmd-code bash">python manage.py startapp blog</span>
+        <div class="cmd-desc"><span class="bn">👉 <code>blog</code> নামে একটি app তৈরি করো। Django-তে প্রতিটি feature আলাদা app-এ রাখা best practice।</span> <span class="en">Creates a new app module named "blog"</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code bash">pip freeze > requirements.txt</span>
+        <div class="cmd-desc"><span class="bn">👉 সব installed package-এর লিস্ট <code>requirements.txt</code> ফাইলে সেভ করো। Team-কে share করার জন্য।</span> <span class="en">Saves all packages to requirements.txt for sharing</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code bash">pip install -r requirements.txt</span>
+        <div class="cmd-desc"><span class="bn">👉 <code>requirements.txt</code> থেকে সব package ইনস্টল করো। নতুন environment setup করতে কাজে আসে।</span> <span class="en">Installs all packages from requirements file</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-filename"><span class="path">myproject/</span><span class="file">settings.py</span> — App register করো</span>
+      <span class="cmd-tag tag-py">PYTHON</span>
+    </div>
+    <pre><span class="cm"># settings.py-তে তোমার app যোগ করতে হবে</span>
+<span class="nb">INSTALLED_APPS</span> = [
+    <span class="st">'django.contrib.admin'</span>,
+    <span class="st">'django.contrib.auth'</span>,
+    <span class="st">'django.contrib.contenttypes'</span>,
+    <span class="st">'django.contrib.sessions'</span>,
+    <span class="st">'django.contrib.messages'</span>,
+    <span class="st">'django.contrib.staticfiles'</span>,
+    <span class="cm"># 👇 তোমার app এখানে যোগ করো</span>
+    <span class="st">'blog'</span>,         <span class="cm"># simple app name</span>
+    <span class="st">'apps.users'</span>,    <span class="cm"># apps folder-এর ভেতরে থাকলে</span>
+]
+
+<span class="cm"># Database — Default SQLite (development-এ ঠিক আছে)</span>
+<span class="nb">DATABASES</span> = {
+    <span class="st">'default'</span>: {
+        <span class="st">'ENGINE'</span>: <span class="st">'django.db.backends.sqlite3'</span>,
+        <span class="st">'NAME'</span>: <span class="nb">BASE_DIR</span> / <span class="st">'db.sqlite3'</span>,
+    }
+}</pre>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 2: CORE COMMANDS
+════════════════════════════════════════ -->
+<section id="core" class="section">
+  <div class="section-header">
+    <div class="section-eyebrow">সব কমান্ড</div>
+    <h2>⚡ Django Core Commands</h2>
+    <p><code>manage.py</code> ব্যবহার করে চালানো যায় এমন সব গুরুত্বপূর্ণ কমান্ড।</p>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Command</th>
+          <th>বাংলায় কাজ</th>
+          <th>Level</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>python manage.py runserver</td>
+          <td><span class="bn">Development সার্ভার চালু করে</span><span class="en">Starts local dev server</span></td>
+          <td><span class="level-badge level-basic">Basic</span></td>
+        </tr>
+        <tr>
+          <td>python manage.py makemigrations</td>
+          <td><span class="bn">Model পরিবর্তনের উপর ভিত্তি করে migration ফাইল তৈরি করে</span><span class="en">Creates migration files from model changes</span></td>
+          <td><span class="level-badge level-basic">Basic</span></td>
+        </tr>
+        <tr>
+          <td>python manage.py migrate</td>
+          <td><span class="bn">Migration database-এ apply করে (table তৈরি/পরিবর্তন করে)</span><span class="en">Applies migrations to the database</span></td>
+          <td><span class="level-badge level-basic">Basic</span></td>
+        </tr>
+        <tr>
+          <td>python manage.py createsuperuser</td>
+          <td><span class="bn">Admin Panel-এর জন্য superuser account তৈরি করে</span><span class="en">Creates admin superuser</span></td>
+          <td><span class="level-badge level-basic">Basic</span></td>
+        </tr>
+        <tr>
+          <td>python manage.py shell</td>
+          <td><span class="bn">Django-র interactive Python shell চালু করে, ORM test করতে কাজে লাগে</span><span class="en">Opens interactive Django shell</span></td>
+          <td><span class="level-badge level-mid">Mid</span></td>
+        </tr>
+        <tr>
+          <td>python manage.py shell_plus</td>
+          <td><span class="bn">উন্নত shell (django-extensions দরকার) — সব model auto-import হয়</span><span class="en">Enhanced shell with auto-imports (needs django-extensions)</span></td>
+          <td><span class="level-badge level-mid">Mid</span></td>
+        </tr>
+        <tr>
+          <td>python manage.py dbshell</td>
+          <td><span class="bn">Database-এর সরাসরি SQL shell খোলে</span><span class="en">Opens raw database shell</span></td>
+          <td><span class="level-badge level-mid">Mid</span></td>
+        </tr>
+        <tr>
+          <td>python manage.py showmigrations</td>
+          <td><span class="bn">কোন migration apply হয়েছে, কোনটা হয়নি তা দেখায়</span><span class="en">Shows migration status for all apps</span></td>
+          <td><span class="level-badge level-mid">Mid</span></td>
+        </tr>
+        <tr>
+          <td>python manage.py migrate blog 0003</td>
+          <td><span class="bn">নির্দিষ্ট migration-এ roll back করো (পুরোনো state-এ ফেরা)</span><span class="en">Rolls back to a specific migration</span></td>
+          <td><span class="level-badge level-adv">Advanced</span></td>
+        </tr>
+        <tr>
+          <td>python manage.py migrate blog zero</td>
+          <td><span class="bn">একটি app-এর সব migration undo করো</span><span class="en">Undoes all migrations for an app</span></td>
+          <td><span class="level-badge level-adv">Advanced</span></td>
+        </tr>
+        <tr>
+          <td>python manage.py test</td>
+          <td><span class="bn">সব test চালায়</span><span class="en">Runs all tests</span></td>
+          <td><span class="level-badge level-mid">Mid</span></td>
+        </tr>
+        <tr>
+          <td>python manage.py test blog.tests.PostTest</td>
+          <td><span class="bn">নির্দিষ্ট test class চালায়</span><span class="en">Runs specific test class</span></td>
+          <td><span class="level-badge level-mid">Mid</span></td>
+        </tr>
+        <tr>
+          <td>python manage.py collectstatic</td>
+          <td><span class="bn">সব static file একটি folder-এ জড়ো করে (production-এর আগে)</span><span class="en">Collects static files for production</span></td>
+          <td><span class="level-badge level-mid">Mid</span></td>
+        </tr>
+        <tr>
+          <td>python manage.py check</td>
+          <td><span class="bn">প্রজেক্টে কোনো সমস্যা আছে কিনা চেক করে</span><span class="en">Validates project for common issues</span></td>
+          <td><span class="level-badge level-basic">Basic</span></td>
+        </tr>
+        <tr>
+          <td>python manage.py dumpdata blog > backup.json</td>
+          <td><span class="bn">Database data JSON-এ export করো (backup)</span><span class="en">Exports database data to JSON</span></td>
+          <td><span class="level-badge level-adv">Advanced</span></td>
+        </tr>
+        <tr>
+          <td>python manage.py loaddata backup.json</td>
+          <td><span class="bn">JSON থেকে database-এ data import করো</span><span class="en">Imports data from JSON fixture</span></td>
+          <td><span class="level-badge level-adv">Advanced</span></td>
+        </tr>
+        <tr>
+          <td>python manage.py sqlmigrate blog 0001</td>
+          <td><span class="bn">একটি migration-এর SQL দেখো — বুঝতে কাজে লাগে</span><span class="en">Shows SQL for a specific migration</span></td>
+          <td><span class="level-badge level-adv">Advanced</span></td>
+        </tr>
+        <tr>
+          <td>python manage.py clearsessions</td>
+          <td><span class="bn">পুরোনো expired session মুছে ফেলো</span><span class="en">Clears expired sessions</span></td>
+          <td><span class="level-badge level-mid">Mid</span></td>
+        </tr>
+        <tr>
+          <td>python manage.py sendtestemail me@example.com</td>
+          <td><span class="bn">Email configuration ঠিকঠাক কাজ করছে কিনা test করো</span><span class="en">Sends a test email to verify email config</span></td>
+          <td><span class="level-badge level-mid">Mid</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 3: MODELS & DATABASE
+════════════════════════════════════════ -->
+<section id="models" class="section">
+  <div class="section-header">
+    <div class="section-eyebrow">Database Layer</div>
+    <h2>🗄 Models & Database</h2>
+    <p>Django ORM দিয়ে database ডিজাইন, query ও optimization।</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-filename"><span class="path">blog/</span><span class="file">models.py</span> — সম্পূর্ণ Model উদাহরণ</span>
+      <span class="cmd-tag tag-py">PYTHON</span>
+    </div>
+    <pre><span class="kw">from</span> django.db <span class="kw">import</span> models
+<span class="kw">from</span> django.contrib.auth.models <span class="kw">import</span> User
+
+<span class="cm"># ── Category Model ──────────────────────────</span>
+<span class="kw">class</span> <span class="cl">Category</span>(models.Model):
+    name = models.<span class="fn">CharField</span>(max_length=<span class="nb">100</span>, unique=<span class="nb">True</span>)
+    slug = models.<span class="fn">SlugField</span>(unique=<span class="nb">True</span>)  <span class="cm"># URL-friendly নাম</span>
+    
+    <span class="kw">class</span> <span class="cl">Meta</span>:
+        verbose_name_plural = <span class="st">"categories"</span>
+        ordering = [<span class="st">'name'</span>]  <span class="cm"># নাম অনুযায়ী sort</span>
+    
+    <span class="kw">def</span> <span class="fn">__str__</span>(self):
+        <span class="kw">return</span> self.name
+
+<span class="cm"># ── Post Model ──────────────────────────────</span>
+<span class="kw">class</span> <span class="cl">Post</span>(models.Model):
+    <span class="cm"># Status choices — tuple-এর list</span>
+    <span class="nb">STATUS_CHOICES</span> = [
+        (<span class="st">'draft'</span>, <span class="st">'Draft'</span>),
+        (<span class="st">'published'</span>, <span class="st">'Published'</span>),
+    ]
+    
+    title       = models.<span class="fn">CharField</span>(max_length=<span class="nb">200</span>)
+    slug        = models.<span class="fn">SlugField</span>(unique=<span class="nb">True</span>)
+    content     = models.<span class="fn">TextField</span>()
+    excerpt     = models.<span class="fn">TextField</span>(blank=<span class="nb">True</span>)  <span class="cm"># Optional field</span>
+    image       = models.<span class="fn">ImageField</span>(upload_to=<span class="st">'posts/'</span>, null=<span class="nb">True</span>, blank=<span class="nb">True</span>)
+    status      = models.<span class="fn">CharField</span>(max_length=<span class="nb">10</span>, choices=<span class="nb">STATUS_CHOICES</span>, default=<span class="st">'draft'</span>)
+    views_count = models.<span class="fn">PositiveIntegerField</span>(default=<span class="nb">0</span>)
+    
+    <span class="cm"># Timestamps — auto_now_add=True মানে create-এর সময় set হয়</span>
+    created_at  = models.<span class="fn">DateTimeField</span>(auto_now_add=<span class="nb">True</span>)
+    updated_at  = models.<span class="fn">DateTimeField</span>(auto_now=<span class="nb">True</span>)  <span class="cm"># save-এর সময় update হয়</span>
+    
+    <span class="cm"># Relationships</span>
+    author      = models.<span class="fn">ForeignKey</span>(User, on_delete=models.<span class="nb">CASCADE</span>, related_name=<span class="st">'posts'</span>)
+    category    = models.<span class="fn">ForeignKey</span>(Category, on_delete=models.<span class="nb">SET_NULL</span>, null=<span class="nb">True</span>)
+    tags        = models.<span class="fn">ManyToManyField</span>(<span class="st">'Tag'</span>, blank=<span class="nb">True</span>)  <span class="cm"># Many-to-Many</span>
+    
+    <span class="kw">class</span> <span class="cl">Meta</span>:
+        ordering = [<span class="st">'-created_at'</span>]  <span class="cm"># নতুন পোস্ট আগে</span>
+        indexes = [
+            models.<span class="fn">Index</span>(fields=[<span class="st">'status'</span>, <span class="st">'-created_at'</span>]),  <span class="cm"># ⚡ Query fast করে</span>
+        ]
+    
+    <span class="kw">def</span> <span class="fn">__str__</span>(self):
+        <span class="kw">return</span> self.title
+    
+    <span class="kw">def</span> <span class="fn">get_absolute_url</span>(self):  <span class="cm"># canonical URL</span>
+        <span class="kw">from</span> django.urls <span class="kw">import</span> reverse
+        <span class="kw">return</span> <span class="fn">reverse</span>(<span class="st">'post-detail'</span>, kwargs={<span class="st">'slug'</span>: self.slug})</pre>
+  </div>
+
+  <div class="cmd-block">
+    <div class="cmd-header">
+      <div class="cmd-dots"><span></span><span></span><span></span></div>
+      <span class="cmd-title">ORM Queries — Shell-এ চেষ্টা করো</span>
+      <span class="cmd-tag tag-py">PYTHON</span>
+    </div>
+    <div class="cmd-body">
+      <div class="cmd-item">
+        <span class="cmd-code">Post.objects.all()</span>
+        <div class="cmd-desc"><span class="bn">👉 সব Post পাও। QuerySet return করে — এখনো DB hit করে না (lazy)।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code">Post.objects.filter(status='published')</span>
+        <div class="cmd-desc"><span class="bn">👉 শুধু published পোস্ট ফিল্টার করো।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code">Post.objects.filter(title__icontains='django')</span>
+        <div class="cmd-desc"><span class="bn">👉 Title-এ 'django' আছে এমন পোস্ট (case-insensitive)। <code>__icontains</code> = field lookup।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code">Post.objects.exclude(status='draft')</span>
+        <div class="cmd-desc"><span class="bn">👉 draft বাদ দিয়ে সব পোস্ট পাও।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code">Post.objects.get(slug='my-post')</span>
+        <div class="cmd-desc"><span class="bn">👉 একটি নির্দিষ্ট পোস্ট পাও। না পেলে <code>DoesNotExist</code> error। একাধিক পেলে <code>MultipleObjectsReturned</code>।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code">Post.objects.get_or_create(slug='test', defaults={'title': 'Test'})</span>
+        <div class="cmd-desc"><span class="bn">👉 থাকলে পাও, না থাকলে তৈরি করো। Returns (object, created_bool)।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code">Post.objects.select_related('author', 'category')</span>
+        <div class="cmd-desc"><span class="bn">👉 ⚡ ForeignKey relationship-এর data একটি query-তেই পাও (JOIN করে)। N+1 সমস্যা দূর করে।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code">Post.objects.prefetch_related('tags')</span>
+        <div class="cmd-desc"><span class="bn">👉 ⚡ ManyToMany relationship-এর জন্য। আলাদা query করে cache-এ রাখে।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code">Post.objects.order_by('-created_at', 'title')</span>
+        <div class="cmd-desc"><span class="bn">👉 নতুন আগে, তারপর title অনুযায়ী sort করো।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code">Post.objects.count()</span>
+        <div class="cmd-desc"><span class="bn">👉 মোট পোস্ট সংখ্যা। DB-তে COUNT() চালায়।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code">Post.objects.values('title', 'status')</span>
+        <div class="cmd-desc"><span class="bn">👉 শুধু নির্দিষ্ট field-এর dict list পাও। পুরো object না পেলে দ্রুত।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code">Post.objects.aggregate(total=Count('id'), avg=Avg('views_count'))</span>
+        <div class="cmd-desc"><span class="bn">👉 পুরো QuerySet-এর aggregate calculation। <code>from django.db.models import Count, Avg</code> দরকার।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code">Post.objects.annotate(comment_count=Count('comments'))</span>
+        <div class="cmd-desc"><span class="bn">👉 প্রতিটি পোস্টে মন্তব্যের সংখ্যা যোগ করে একটি extra field হিসেবে।</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warning"><strong>⚠️ সাবধান:</strong> <code>Post.objects.all()</code> সব data memory-তে load করে। বড় dataset-এ সবসময় <code>filter()</code>, <code>.only('field1')</code> বা pagination ব্যবহার করো।</div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 4: VIEWS & URLS
+════════════════════════════════════════ -->
+<section id="views" class="section">
+  <div class="section-header">
+    <div class="section-eyebrow">Request Handling</div>
+    <h2>👁 Views & URLs</h2>
+    <p>Function-based ও Class-based Views, URL routing সম্পূর্ণ গাইড।</p>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-filename"><span class="path">blog/</span><span class="file">views.py</span> — Function-Based Views (FBV)</span>
+      <span class="cmd-tag tag-py">PYTHON</span>
+    </div>
+    <pre><span class="kw">from</span> django.shortcuts <span class="kw">import</span> render, get_object_or_404, redirect
+<span class="kw">from</span> django.contrib.auth.decorators <span class="kw">import</span> login_required
+<span class="kw">from</span> django.views.decorators.http <span class="kw">import</span> require_http_methods
+<span class="kw">from</span> django.http <span class="kw">import</span> JsonResponse
+<span class="kw">from</span> .models <span class="kw">import</span> Post
+
+<span class="cm"># ── সাধারণ List View ────────────────────────</span>
+<span class="kw">def</span> <span class="fn">post_list</span>(request):
+    posts = Post.objects.<span class="fn">filter</span>(status=<span class="st">'published'</span>).<span class="fn">select_related</span>(<span class="st">'author'</span>)
+    <span class="kw">return</span> <span class="fn">render</span>(request, <span class="st">'blog/list.html'</span>, {<span class="st">'posts'</span>: posts})
+
+<span class="cm"># ── Login দরকার এমন View ────────────────────</span>
+<span class="dc">@login_required</span>  <span class="cm"># না থাকলে login page-এ redirect করবে</span>
+<span class="kw">def</span> <span class="fn">post_create</span>(request):
+    <span class="kw">if</span> request.method == <span class="st">'POST'</span>:
+        title   = request.POST.<span class="fn">get</span>(<span class="st">'title'</span>)
+        content = request.POST.<span class="fn">get</span>(<span class="st">'content'</span>)
+        post    = Post.objects.<span class="fn">create</span>(title=title, content=content, author=request.user)
+        <span class="kw">return</span> <span class="fn">redirect</span>(<span class="st">'post-detail'</span>, slug=post.slug)
+    <span class="kw">return</span> <span class="fn">render</span>(request, <span class="st">'blog/create.html'</span>)
+
+<span class="cm"># ── JSON Response (API-like) ─────────────────</span>
+<span class="dc">@require_http_methods</span>([<span class="st">"GET"</span>])
+<span class="kw">def</span> <span class="fn">post_json</span>(request, pk):
+    post = <span class="fn">get_object_or_404</span>(Post, pk=pk)  <span class="cm"># না পেলে 404 দেয়</span>
+    <span class="kw">return</span> <span class="fn">JsonResponse</span>({<span class="st">'title'</span>: post.title, <span class="st">'status'</span>: post.status})</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-filename"><span class="path">blog/</span><span class="file">views.py</span> — Class-Based Views (CBV) — বেশি শক্তিশালী</span>
+      <span class="cmd-tag tag-py">PYTHON</span>
+    </div>
+    <pre><span class="kw">from</span> django.views.generic <span class="kw">import</span> ListView, DetailView, CreateView, UpdateView, DeleteView
+<span class="kw">from</span> django.contrib.auth.mixins <span class="kw">import</span> LoginRequiredMixin
+<span class="kw">from</span> django.urls <span class="kw">import</span> reverse_lazy
+
+<span class="cm"># ── ListView: সব পোস্টের লিস্ট ──────────────</span>
+<span class="kw">class</span> <span class="cl">PostListView</span>(ListView):
+    model        = Post
+    template_name = <span class="st">'blog/list.html'</span>
+    context_object_name = <span class="st">'posts'</span>  <span class="cm"># template-এ 'posts' নামে পাবে</span>
+    paginate_by  = <span class="nb">10</span>  <span class="cm"># এক পাতায় ১০টি — pagination auto!</span>
+    
+    <span class="kw">def</span> <span class="fn">get_queryset</span>(self):  <span class="cm"># Custom filter</span>
+        <span class="kw">return</span> Post.objects.<span class="fn">filter</span>(status=<span class="st">'published'</span>)
+
+<span class="cm"># ── DetailView: একটি পোস্ট ────────────────────</span>
+<span class="kw">class</span> <span class="cl">PostDetailView</span>(DetailView):
+    model        = Post
+    template_name = <span class="st">'blog/detail.html'</span>
+    slug_field   = <span class="st">'slug'</span>  <span class="cm"># URL-এ slug ব্যবহার করা হবে</span>
+
+<span class="cm"># ── CreateView: নতুন পোস্ট ────────────────────</span>
+<span class="kw">class</span> <span class="cl">PostCreateView</span>(<span class="cl">LoginRequiredMixin</span>, <span class="cl">CreateView</span>):
+    model         = Post
+    fields        = [<span class="st">'title'</span>, <span class="st">'content'</span>, <span class="st">'category'</span>]
+    template_name = <span class="st">'blog/form.html'</span>
+    success_url   = <span class="fn">reverse_lazy</span>(<span class="st">'post-list'</span>)  <span class="cm"># সফল হলে কোথায় যাবে</span>
+    
+    <span class="kw">def</span> <span class="fn">form_valid</span>(self, form):
+        form.instance.author = self.request.user  <span class="cm"># author auto-set</span>
+        <span class="kw">return</span> <span class="fn">super</span>().<span class="fn">form_valid</span>(form)
+
+<span class="cm"># ── DeleteView ────────────────────────────────</span>
+<span class="kw">class</span> <span class="cl">PostDeleteView</span>(<span class="cl">LoginRequiredMixin</span>, <span class="cl">DeleteView</span>):
+    model       = Post
+    success_url = <span class="fn">reverse_lazy</span>(<span class="st">'post-list'</span>)</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-filename"><span class="path">blog/</span><span class="file">urls.py</span> — URL Configuration</span>
+      <span class="cmd-tag tag-py">PYTHON</span>
+    </div>
+    <pre><span class="kw">from</span> django.urls <span class="kw">import</span> path
+<span class="kw">from</span> . <span class="kw">import</span> views
+
+app_name = <span class="st">'blog'</span>  <span class="cm"># Namespace — template-এ 'blog:post-list' লিখতে পারবে</span>
+
+urlpatterns = [
+    <span class="cm"># FBV</span>
+    <span class="fn">path</span>(<span class="st">''</span>,                    views.post_list,                name=<span class="st">'post-list'</span>),
+    <span class="cm"># CBV — .as_view() লাগবে</span>
+    <span class="fn">path</span>(<span class="st">'&lt;slug:slug&gt;/'</span>,        views.<span class="cl">PostDetailView</span>.<span class="fn">as_view</span>(), name=<span class="st">'post-detail'</span>),
+    <span class="fn">path</span>(<span class="st">'create/'</span>,             views.<span class="cl">PostCreateView</span>.<span class="fn">as_view</span>(), name=<span class="st">'post-create'</span>),
+    <span class="fn">path</span>(<span class="st">'&lt;slug:slug&gt;/delete/'</span>, views.<span class="cl">PostDeleteView</span>.<span class="fn">as_view</span>(), name=<span class="st">'post-delete'</span>),
+    <span class="cm"># int pk parameter</span>
+    <span class="fn">path</span>(<span class="st">'&lt;int:pk&gt;/json/'</span>,      views.post_json,               name=<span class="st">'post-json'</span>),
+]</pre>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 5: REST API
+════════════════════════════════════════ -->
+<section id="api" class="section">
+  <div class="section-header">
+    <div class="section-eyebrow">Django REST Framework</div>
+    <h2>🔌 REST API Development</h2>
+    <p>DRF দিয়ে professional API তৈরির সব কিছু।</p>
+  </div>
+
+  <div class="cmd-block">
+    <div class="cmd-header">
+      <div class="cmd-dots"><span></span><span></span><span></span></div>
+      <span class="cmd-title">DRF Install ও Setup</span>
+      <span class="cmd-tag tag-bash">BASH</span>
+    </div>
+    <div class="cmd-body">
+      <div class="cmd-item">
+        <span class="cmd-code bash">pip install djangorestframework</span>
+        <div class="cmd-desc"><span class="bn">👉 Django REST Framework ইনস্টল করো।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code bash">pip install drf-spectacular</span>
+        <div class="cmd-desc"><span class="bn">👉 Swagger/OpenAPI documentation তৈরির জন্য।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code bash">pip install django-filter</span>
+        <div class="cmd-desc"><span class="bn">👉 API filtering-এর জন্য। Query parameter দিয়ে filter করতে দেয়।</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-filename"><span class="path">blog/</span><span class="file">serializers.py</span> — Data Validation & Transformation</span>
+      <span class="cmd-tag tag-py">PYTHON</span>
+    </div>
+    <pre><span class="kw">from</span> rest_framework <span class="kw">import</span> serializers
+<span class="kw">from</span> .models <span class="kw">import</span> Post, Category
+
+<span class="kw">class</span> <span class="cl">CategorySerializer</span>(serializers.ModelSerializer):
+    <span class="kw">class</span> <span class="cl">Meta</span>:
+        model  = Category
+        fields = [<span class="st">'id'</span>, <span class="st">'name'</span>, <span class="st">'slug'</span>]
+
+<span class="kw">class</span> <span class="cl">PostSerializer</span>(serializers.ModelSerializer):
+    <span class="cm"># Nested serializer — category-র পুরো object দেখাবে, শুধু id না</span>
+    category = <span class="cl">CategorySerializer</span>(read_only=<span class="nb">True</span>)
+    <span class="cm"># Write করতে id দেওয়ার জন্য আলাদা field</span>
+    category_id = serializers.<span class="fn">IntegerField</span>(write_only=<span class="nb">True</span>)
+    <span class="cm"># Custom field — model-এ নেই কিন্তু response-এ থাকবে</span>
+    author_name = serializers.<span class="fn">SerializerMethodField</span>()
+    
+    <span class="kw">class</span> <span class="cl">Meta</span>:
+        model  = Post
+        fields = [<span class="st">'id'</span>, <span class="st">'title'</span>, <span class="st">'slug'</span>, <span class="st">'content'</span>, <span class="st">'status'</span>,
+                  <span class="st">'category'</span>, <span class="st">'category_id'</span>, <span class="st">'author_name'</span>, <span class="st">'created_at'</span>]
+        read_only_fields = [<span class="st">'id'</span>, <span class="st">'slug'</span>, <span class="st">'created_at'</span>]
+    
+    <span class="kw">def</span> <span class="fn">get_author_name</span>(self, obj):  <span class="cm"># SerializerMethodField-এর method</span>
+        <span class="kw">return</span> obj.author.get_full_name() <span class="kw">or</span> obj.author.username
+    
+    <span class="kw">def</span> <span class="fn">validate_title</span>(self, value):  <span class="cm"># Field-level validation</span>
+        <span class="kw">if</span> <span class="fn">len</span>(value) < <span class="nb">5</span>:
+            <span class="kw">raise</span> serializers.<span class="fn">ValidationError</span>(<span class="st">"Title must be at least 5 characters."</span>)
+        <span class="kw">return</span> value</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-filename"><span class="path">blog/</span><span class="file">views.py</span> — ViewSets — সবচেয়ে কম কোডে পুরো CRUD</span>
+      <span class="cmd-tag tag-py">PYTHON</span>
+    </div>
+    <pre><span class="kw">from</span> rest_framework <span class="kw">import</span> viewsets, permissions, filters
+<span class="kw">from</span> rest_framework.decorators <span class="kw">import</span> action
+<span class="kw">from</span> rest_framework.response <span class="kw">import</span> Response
+<span class="kw">from</span> django_filters.rest_framework <span class="kw">import</span> DjangoFilterBackend
+<span class="kw">from</span> .models <span class="kw">import</span> Post
+<span class="kw">from</span> .serializers <span class="kw">import</span> PostSerializer
+
+<span class="kw">class</span> <span class="cl">PostViewSet</span>(viewsets.ModelViewSet):
+    <span class="st">"""
+    GET  /api/posts/         → list
+    POST /api/posts/         → create
+    GET  /api/posts/1/       → retrieve
+    PUT  /api/posts/1/       → update
+    DEL  /api/posts/1/       → destroy
+    """</span>
+    queryset           = Post.objects.<span class="fn">select_related</span>(<span class="st">'author'</span>, <span class="st">'category'</span>)
+    serializer_class   = PostSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    
+    <span class="cm"># Filtering, Searching, Ordering</span>
+    filter_backends  = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = [<span class="st">'status'</span>, <span class="st">'category'</span>]      <span class="cm"># ?status=published</span>
+    search_fields    = [<span class="st">'title'</span>, <span class="st">'content'</span>]        <span class="cm"># ?search=django</span>
+    ordering_fields  = [<span class="st">'created_at'</span>, <span class="st">'views_count'</span>] <span class="cm"># ?ordering=-views_count</span>
+    
+    <span class="kw">def</span> <span class="fn">perform_create</span>(self, serializer):
+        serializer.<span class="fn">save</span>(author=self.request.user)  <span class="cm"># Author auto-set</span>
+    
+    <span class="cm"># Custom action — GET/POST /api/posts/trending/</span>
+    <span class="dc">@action</span>(detail=<span class="nb">False</span>, methods=[<span class="st">'get'</span>])
+    <span class="kw">def</span> <span class="fn">trending</span>(self, request):
+        trending = self.<span class="fn">get_queryset</span>().<span class="fn">order_by</span>(<span class="st">'-views_count'</span>)[:<span class="nb">5</span>]
+        serializer = self.<span class="fn">get_serializer</span>(trending, many=<span class="nb">True</span>)
+        <span class="kw">return</span> Response(serializer.data)</pre>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 6: AUTH & SECURITY
+════════════════════════════════════════ -->
+<section id="auth" class="section">
+  <div class="section-header">
+    <div class="section-eyebrow">Authentication</div>
+    <h2>🔒 Auth & Security</h2>
+    <p>Custom User Model, JWT Token, Permission সব কিছু।</p>
+  </div>
+
+  <div class="tip"><strong>💡 গুরুত্বপূর্ণ:</strong> Custom User Model প্রজেক্ট শুরুতেই তৈরি করো। পরে করলে migration-এ অনেক ঝামেলা হয়।</div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-filename"><span class="path">users/</span><span class="file">models.py</span> — Custom User Model</span>
+      <span class="cmd-tag tag-py">PYTHON</span>
+    </div>
+    <pre><span class="kw">from</span> django.contrib.auth.models <span class="kw">import</span> AbstractUser
+<span class="kw">from</span> django.db <span class="kw">import</span> models
+
+<span class="kw">class</span> <span class="cl">User</span>(<span class="cl">AbstractUser</span>):
+    <span class="cm"># Default fields: username, email, first_name, last_name, password, is_staff...</span>
+    <span class="cm"># Extra fields যোগ করো</span>
+    avatar  = models.<span class="fn">ImageField</span>(upload_to=<span class="st">'avatars/'</span>, null=<span class="nb">True</span>, blank=<span class="nb">True</span>)
+    bio     = models.<span class="fn">TextField</span>(blank=<span class="nb">True</span>)
+    phone   = models.<span class="fn">CharField</span>(max_length=<span class="nb">15</span>, blank=<span class="nb">True</span>)
+    
+    <span class="kw">def</span> <span class="fn">__str__</span>(self):
+        <span class="kw">return</span> self.username
+
+<span class="cm"># settings.py-তে এটা যোগ করো:</span>
+<span class="cm"># AUTH_USER_MODEL = 'users.User'</span></pre>
+  </div>
+
+  <div class="cmd-block">
+    <div class="cmd-header">
+      <div class="cmd-dots"><span></span><span></span><span></span></div>
+      <span class="cmd-title">JWT Token Authentication (SimpleJWT)</span>
+      <span class="cmd-tag tag-bash">BASH</span>
+    </div>
+    <div class="cmd-body">
+      <div class="cmd-item">
+        <span class="cmd-code bash">pip install djangorestframework-simplejwt</span>
+        <div class="cmd-desc"><span class="bn">👉 JWT authentication ইনস্টল করো। Token-based auth-এর জন্য সবচেয়ে জনপ্রিয়।</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-filename"><span class="file">settings.py</span> — JWT Configuration</span>
+      <span class="cmd-tag tag-py">PYTHON</span>
+    </div>
+    <pre><span class="kw">from</span> datetime <span class="kw">import</span> timedelta
+
+<span class="nb">REST_FRAMEWORK</span> = {
+    <span class="st">'DEFAULT_AUTHENTICATION_CLASSES'</span>: (
+        <span class="st">'rest_framework_simplejwt.authentication.JWTAuthentication'</span>,
+    ),
+    <span class="st">'DEFAULT_PERMISSION_CLASSES'</span>: [
+        <span class="st">'rest_framework.permissions.IsAuthenticated'</span>,
+    ],
+    <span class="st">'DEFAULT_PAGINATION_CLASS'</span>: <span class="st">'rest_framework.pagination.PageNumberPagination'</span>,
+    <span class="st">'PAGE_SIZE'</span>: <span class="nb">20</span>,
+}
+
+<span class="nb">SIMPLE_JWT</span> = {
+    <span class="st">'ACCESS_TOKEN_LIFETIME'</span>:  timedelta(minutes=<span class="nb">60</span>),   <span class="cm"># ৬০ মিনিট valid</span>
+    <span class="st">'REFRESH_TOKEN_LIFETIME'</span>: timedelta(days=<span class="nb">7</span>),       <span class="cm"># ৭ দিন</span>
+    <span class="st">'ROTATE_REFRESH_TOKENS'</span>:  <span class="nb">True</span>,  <span class="cm"># refresh করলে নতুন refresh token দেবে</span>
+}
+
+<span class="cm"># Security settings (Production-এ অবশ্যই)</span>
+<span class="nb">DEBUG</span>            = <span class="nb">False</span>          <span class="cm"># Production-এ False!</span>
+<span class="nb">ALLOWED_HOSTS</span>    = [<span class="st">'yourdomain.com'</span>]
+<span class="nb">SECURE_SSL_REDIRECT</span>       = <span class="nb">True</span>   <span class="cm"># HTTP → HTTPS redirect</span>
+<span class="nb">SESSION_COOKIE_SECURE</span>     = <span class="nb">True</span>   <span class="cm"># HTTPS-only cookie</span>
+<span class="nb">CSRF_COOKIE_SECURE</span>        = <span class="nb">True</span>
+<span class="nb">X_FRAME_OPTIONS</span>           = <span class="st">'DENY'</span> <span class="cm"># Clickjacking protection</span></pre>
+  </div>
+
+  <div class="cmd-block">
+    <div class="cmd-header">
+      <div class="cmd-dots"><span></span><span></span><span></span></div>
+      <span class="cmd-title">Security-র জন্য দরকারী Packages</span>
+      <span class="cmd-tag tag-bash">BASH</span>
+    </div>
+    <div class="cmd-body">
+      <div class="cmd-item">
+        <span class="cmd-code bash">pip install django-environ</span>
+        <div class="cmd-desc"><span class="bn">👉 <code>.env</code> ফাইল থেকে secret key, database URL পড়ার জন্য। Password code-এ লেখা ঠিক না।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code bash">pip install django-cors-headers</span>
+        <div class="cmd-desc"><span class="bn">👉 React/Vue frontend থেকে API call করতে CORS ঠিক করো।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code bash">pip install django-ratelimit</span>
+        <div class="cmd-desc"><span class="bn">👉 API abuse ঠেকাতে rate limiting। প্রতি user কতবার request করতে পারবে সীমা দাও।</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 7: DEPLOY
+════════════════════════════════════════ -->
+<section id="deploy" class="section">
+  <div class="section-header">
+    <div class="section-eyebrow">Production</div>
+    <h2>🚀 Deployment Guide</h2>
+    <p>Server-এ Django project live করার ধাপে ধাপে পথ।</p>
+  </div>
+
+  <div class="steps">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h4>Environment Variables সেট করো</h4>
+        <p>SECRET_KEY, DATABASE_URL, DEBUG=False সব <code>.env</code> ফাইলে রাখো। কখনো code-এ লিখবে না।</p>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h4>Gunicorn দিয়ে WSGI Server চালাও</h4>
+        <p><code>pip install gunicorn</code> তারপর <code>gunicorn config.wsgi:application --workers 3</code></p>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h4>Static Files Collect করো</h4>
+        <p><code>python manage.py collectstatic --noinput</code> — Nginx দিয়ে static serve করবে।</p>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h4>Nginx Reverse Proxy</h4>
+        <p>Nginx → Gunicorn → Django। HTTPS SSL, static file serving Nginx করবে।</p>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <h4>Database Migration Production-এ</h4>
+        <p><code>python manage.py migrate --run-syncdb</code> — তারপর <code>createsuperuser</code>।</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cmd-block">
+    <div class="cmd-header">
+      <div class="cmd-dots"><span></span><span></span><span></span></div>
+      <span class="cmd-title">Docker দিয়ে Deploy</span>
+      <span class="cmd-tag tag-bash">BASH</span>
+    </div>
+    <div class="cmd-body">
+      <div class="cmd-item">
+        <span class="cmd-code bash">docker build -t myapp .</span>
+        <div class="cmd-desc"><span class="bn">👉 Docker image তৈরি করো।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code bash">docker-compose up -d</span>
+        <div class="cmd-desc"><span class="bn">👉 Django + PostgreSQL + Nginx সব একসাথে background-এ চালাও। <code>docker-compose.yml</code> দরকার।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code bash">docker-compose exec web python manage.py migrate</span>
+        <div class="cmd-desc"><span class="bn">👉 চলমান container-এ manage.py command চালাও।</span></div>
+      </div>
+      <div class="cmd-item">
+        <span class="cmd-code bash">docker-compose logs -f web</span>
+        <div class="cmd-desc"><span class="bn">👉 Real-time log দেখো। Error debugging-এ কাজে লাগে।</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip"><strong>💡 Production Checklist:</strong> <code>python manage.py check --deploy</code> চালাও — Django নিজেই security issues ধরিয়ে দেবে।</div>
+</section>
+
+<!-- ══════════════════════════════════════
+     SECTION 8: ROADMAP
+════════════════════════════════════════ -->
+<section id="roadmap" class="section">
+  <div class="section-header">
+    <div class="section-eyebrow">শেখার পথ</div>
+    <h2>🗺 Basic → Pro Roadmap</h2>
+    <p>ধাপে ধাপে Django expert হওয়ার পথ।</p>
+  </div>
+
+  <div class="roadmap">
+    <div class="rm-item done">
+      <div class="rm-title">🟢 Stage 1 — Foundation <span class="level-badge level-basic">Basic</span></div>
+      <ul class="rm-list">
+        <li>Python OOP ভালো করে শেখো (class, inheritance)</li>
+        <li>Django MVT concept বোঝো</li>
+        <li>Virtual environment, pip</li>
+        <li>First app তৈরি (Blog/Todo)</li>
+        <li>Models, Views, Templates, URLs</li>
+        <li>Django Admin customization</li>
+        <li>Forms ও Validation</li>
+      </ul>
+    </div>
+    <div class="rm-item">
+      <div class="rm-title">🔵 Stage 2 — Intermediate <span class="level-badge level-mid">Mid</span></div>
+      <ul class="rm-list">
+        <li>Class-Based Views (ListView, DetailView, CRUD)</li>
+        <li>Django ORM advanced (annotate, aggregate, Q objects)</li>
+        <li>User Authentication (login, logout, register)</li>
+        <li>File Upload ও Media handling</li>
+        <li>Django REST Framework (Serializers, APIView)</li>
+        <li>JWT Token Authentication</li>
+        <li>Signals (post_save, pre_delete)</li>
+        <li>Custom Management Commands</li>
+      </ul>
+    </div>
+    <div class="rm-item">
+      <div class="rm-title">🟠 Stage 3 — Advanced <span class="level-badge level-adv">Advanced</span></div>
+      <ul class="rm-list">
+        <li>Query Optimization (select_related, prefetch, indexes)</li>
+        <li>Caching (Redis, Memcached)</li>
+        <li>Celery Task Queue (async tasks)</li>
+        <li>WebSocket (Django Channels)</li>
+        <li>Custom Middleware</li>
+        <li>Testing (pytest, factory_boy, mock)</li>
+        <li>API Versioning ও Swagger docs</li>
+        <li>Docker + CI/CD pipeline</li>
+      </ul>
+    </div>
+    <div class="rm-item">
+      <div class="rm-title">🔴 Stage 4 — Pro Expert</div>
+      <ul class="rm-list">
+        <li>Microservices architecture</li>
+        <li>Database Sharding ও Replication</li>
+        <li>Custom Authentication backends</li>
+        <li>Multi-tenancy (django-tenants)</li>
+        <li>Performance profiling (django-debug-toolbar, silk)</li>
+        <li>Search (Elasticsearch, django-haystack)</li>
+        <li>Cloud deploy (AWS, GCP, DigitalOcean)</li>
+        <li>Kubernetes orchestration</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top: 32px;">
+    <div class="section-eyebrow" style="margin-bottom: 16px;">🔗 অফিশিয়াল রিসোর্স</div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">📚</div>
+        <h3>Django Official Docs</h3>
+        <p>docs.djangoproject.com — সবচেয়ে নির্ভরযোগ্য। Django Tutorial দিয়ে শুরু করো।</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔌</div>
+        <h3>DRF Docs</h3>
+        <p>django-rest-framework.org — API তৈরির সম্পূর্ণ documentation।</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">▶️</div>
+        <h3>Corey Schafer (YouTube)</h3>
+        <p>"Python Django Tutorial" playlist — বাস্তব প্রজেক্ট দিয়ে ধাপে ধাপে শেখানো।</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📖</div>
+        <h3>Two Scoops of Django</h3>
+        <p>Django best practices-এর সেরা বই। Intermediate-Advanced-এর জন্য।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  Built for Django developers learning in Bangla &amp; English · Basic to Pro Guide
+</footer>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
